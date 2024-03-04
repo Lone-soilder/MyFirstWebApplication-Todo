@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -32,28 +33,47 @@ public class TodoController {
         return "listTodos";  //this will search listTodos.jsp in return
     }
 
-    @RequestMapping(value = "add-todo" , method = RequestMethod.GET)
-    public String showNewTodo(ModelMap modelMap){
-        Todo todo = new Todo(0 , (String) modelMap.get("name"),"",LocalTime.now().plusHours(1),false);
+    @RequestMapping(value = "add-todo" , method = RequestMethod.GET)  // this method is to show the new page where you can give todo details
+    public String showNewTodoPage(ModelMap modelMap){
+        Todo todo = new Todo(0 , (String) modelMap.get("name")," ", LocalDate.now().plusYears(1),false);
         modelMap.put("todo",todo);
-        return "todo";  //this will search listTodos.jsp in return
+        return "todo";  //this will search todo.jsp in return where you can edit or add a todo action.
     }
 
-    @RequestMapping(value = "add-todo" , method = RequestMethod.POST)
+    @RequestMapping(value = "add-todo" , method = RequestMethod.POST)  // this method works when you click submit on your todo - page
     public String addNewTodo(ModelMap modelMap , @Valid Todo todo , BindingResult bindingResult){
 
         if(bindingResult.hasErrors()){
             return "todo";
         }
-        todoService.addTodo((String) modelMap.get("name"),todo.getDescription(), LocalTime.now().plusHours(1),false);
+        todoService.addTodo((String) modelMap.get("name"),todo.getDescription(), todo.getTargetDate().plusYears(1),false);
         return "redirect:list-todos";  //this will redirect to the page "list-todos" URL  in return
     }
 
     @RequestMapping("delete-todo")
     public  String  deleteTodo(@RequestParam int id){
-
         todoService.deleteById(id);
         return "redirect:list-todos";
 
     }
+
+    @RequestMapping(value = "update-todo" , method = RequestMethod.GET) // this method works when you click update button
+    public  String  showUpdateTodoPage(@RequestParam int id , ModelMap modelMap){
+        Todo todo = todoService.findById(id);
+        modelMap.addAttribute("todo",todo);
+        return "todo";
+
+    }
+
+    @RequestMapping(value = "update-todo" , method = RequestMethod.POST) // this method works when you click on submit button of todo page
+    public String updateTodo(ModelMap modelMap , @Valid Todo todo , BindingResult bindingResult){
+
+        if(bindingResult.hasErrors()){
+            return "todo";
+        }
+        todoService.updateTodo(todo);
+        todo.setUsername((String) modelMap.get("name"));
+        return "redirect:list-todos";  //this will redirect to the page "list-todos" URL  in return
+    }
+
 }

@@ -2,6 +2,7 @@ package com.in28minutes.springboot.myFirstWebApp.todo;
 
 import jakarta.validation.constraints.Size;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class Todo {
@@ -10,7 +11,7 @@ public class Todo {
 
     @Size(min = 10 , message = "Enter at least 10 characters")
     private String description;
-    private LocalTime targetDate;
+    private LocalDate targetDate;
     private boolean done;
 
     @Override
@@ -48,11 +49,11 @@ public class Todo {
         this.description = description;
     }
 
-    public LocalTime getTargetDate() {
+    public LocalDate getTargetDate() {
         return targetDate;
     }
 
-    public void setTargetDate(LocalTime targetDate) {
+    public void setTargetDate(LocalDate targetDate) {
         this.targetDate = targetDate;
     }
 
@@ -64,7 +65,7 @@ public class Todo {
         this.done = done;
     }
 
-    public Todo(int id, String username, String description, LocalTime targetDate, boolean done) {
+    public Todo(int id, String username, String description, LocalDate targetDate, boolean done) {
         this.id = id;
         this.username = username;
         this.description = description;
